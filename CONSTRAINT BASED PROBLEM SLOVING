@@ -1,0 +1,466 @@
+1)
+CODE:
+
+print("===== SMART AC AI AGENT =====")
+
+temperature = int(input("Enter room temperature (°C): "))
+
+print("\nAI Agent is observing the environment...")
+
+if temperature >= 30:
+    print("Decision: Turn ON the Air Conditioner")
+else:
+    print("Decision: Turn OFF the Air Conditioner")
+
+OUTPUT:
+===== SMART AC AI AGENT =====
+Enter room temperature (°C): 40
+
+AI Agent is observing the environment...
+Decision: Turn ON the Air Conditioner
+
+
+
+
+2)
+CODE:
+# Create the board
+board = [" "] * 9
+
+
+# Function to display the board
+def display_board():
+    print("\n")
+    print(f" {board[0]} | {board[1]} | {board[2]} ")
+    print("---+---+---")
+    print(f" {board[3]} | {board[4]} | {board[5]} ")
+    print("---+---+---")
+    print(f" {board[6]} | {board[7]} | {board[8]} ")
+    print("\n")
+
+
+# Function to check winner
+def check_winner(player):
+
+    winning_positions = [
+        [0,1,2],
+        [3,4,5],
+        [6,7,8],
+        [0,3,6],
+        [1,4,7],
+        [2,5,8],
+        [0,4,8],
+        [2,4,6]
+    ]
+
+    for combo in winning_positions:
+        if board[combo[0]] == board[combo[1]] == board[combo[2]] == player:
+            return True
+
+    return False
+
+
+# Function to check draw
+def check_draw():
+    return " " not in board
+
+
+# Computer Move
+def computer_move():
+
+    for i in range(9):
+        if board[i] == " ":
+            board[i] = "O"
+            print("Computer selected position", i + 1)
+            return
+
+
+# -------------------------
+# Main Program
+# -------------------------
+
+print("===================================")
+print("        TIC TAC TOE GAME")
+print("===================================")
+print("Player  : X")
+print("Computer: O")
+
+while True:
+
+    display_board()
+
+    try:
+        position = int(input("Enter position (1-9): "))
+
+        if position < 1 or position > 9:
+            print("Please enter a number between 1 and 9.")
+            continue
+
+        if board[position-1] != " ":
+            print("Position already occupied.")
+            continue
+
+        # Player Move
+        board[position-1] = "X"
+
+        # Check Player Win
+        if check_winner("X"):
+            display_board()
+            print("🎉 Congratulations! You Win.")
+            break
+
+        # Check Draw
+        if check_draw():
+            display_board()
+            print("Game Draw!")
+            break
+
+        # Computer Move
+        computer_move()
+
+        # Check Computer Win
+        if check_winner("O"):
+            display_board()
+            print("Computer Wins!")
+            break
+
+        # Check Draw
+        if check_draw():
+            display_board()
+            print("Game Draw!")
+            break
+
+    except ValueError:
+        print("Please enter a valid number.")
+
+OUTPUT:
+===================================
+        TIC TAC TOE GAME
+===================================
+Player  : X
+Computer: O
+
+
+   |   |   
+---+---+---
+   |   |   
+---+---+---
+   |   |   
+
+
+Enter position (1-9): 5
+Computer selected position 1
+
+
+ O |   |   
+---+---+---
+   | X |   
+---+---+---
+   |   |   
+
+
+Enter position (1-9): 6
+Computer selected position 2
+
+
+ O | O |   
+---+---+---
+   | X | X 
+---+---+---
+   |   |   
+
+
+Enter position (1-9): 
+
+
+
+
+
+3)
+CODE:
+
+# Simple Rational Agent Example
+
+# Environment
+grid = [
+    ['R', ' ', 'T'],
+    ['X', 'X', ' '],
+    [' ', ' ', ' ']
+]
+
+# Robot position
+row = 0
+col = 0
+
+# Target
+target = (0,2)
+
+print("Robot Starts at:", (row,col))
+
+# Rational Agent Logic
+while (row,col) != target:
+
+    # Move Right if possible
+    if col < 2 and grid[row][col+1] != 'X':
+        col += 1
+        print("Move Right")
+
+    # Otherwise Move Down
+    elif row < 2 and grid[row+1][col] != 'X':
+        row += 1
+        print("Move Down")
+
+print("\nTarget Reached!")
+
+OUTPUT:
+
+Robot Starts at: (0, 0)
+Move Right
+Move Right
+
+Target Reached!
+
+
+
+
+
+
+
+4)
+CODE:
+from collections import deque
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F', 'G'],
+    'D': [],
+    'E': [],
+    'F': [],
+    'G': []
+}
+
+queue = deque(['A'])
+visited = []
+
+while queue:
+    node = queue.popleft()
+
+    if node not in visited:
+        print(node, end=" ")
+        visited.append(node)
+
+        for neighbor in graph[node]:
+            queue.append(neighbor)
+
+OUTPUT:
+A B C D E F G 
+
+
+5)
+CODE:
+
+from queue import PriorityQueue
+
+# Graph representation
+graph = {
+    'A': [('B', 4), ('C', 3)],
+    'B': [('D', 5), ('E', 12)],
+    'C': [('E', 10)],
+    'D': [('G', 7)],
+    'E': [('G', 2)],
+    'G': []
+}
+
+# Heuristic values (estimated distance to Goal G)
+heuristic = {
+    'A': 10,
+    'B': 8,
+    'C': 7,
+    'D': 4,
+    'E': 2,
+    'G': 0
+}
+
+def astar(start, goal):
+    open_list = PriorityQueue()
+    open_list.put((0, start))
+
+    g_cost = {start: 0}
+    parent = {start: None}
+
+    while not open_list.empty():
+        current = open_list.get()[1]
+
+        if current == goal:
+            path = []
+            while current:
+                path.append(current)
+                current = parent[current]
+            return path[::-1]
+
+        for neighbor, cost in graph[current]:
+            new_g = g_cost[current] + cost
+
+            if neighbor not in g_cost or new_g < g_cost[neighbor]:
+                g_cost[neighbor] = new_g
+                f_cost = new_g + heuristic[neighbor]
+
+                open_list.put((f_cost, neighbor))
+                parent[neighbor] = current
+
+    return None
+
+# Run A*
+path = astar('A', 'G')
+
+print("Shortest Path:", " -> ".join(path))
+
+OUTPUT:
+Shortest Path: A -> C -> E -> G
+
+6)
+CODE:
+
+# Graph
+graph = {
+    'A': [('B', 1), ('C', 4)],
+    'B': [('D', 2)],
+    'C': [('D', 1)],
+    'D': []
+}
+
+# Heuristic values
+h = {
+    'A': 3,
+    'B': 2,
+    'C': 1,
+    'D': 0
+}
+
+start = 'A'
+goal = 'D'
+
+open_list = [(start, 0)]  # (node, g_cost)
+visited = []
+
+while open_list:
+
+    # Select node with minimum f = g + h
+    current, g = min(open_list, key=lambda x: x[1] + h[x[0]])
+    open_list.remove((current, g))
+
+    print("Visiting:", current)
+
+    if current == goal:
+        print("Goal Reached!")
+        break
+
+    visited.append(current)
+
+    for neighbor, cost in graph[current]:
+        if neighbor not in visited:
+            open_list.append((neighbor, g + cost))
+
+OUTPUT:
+
+Visiting: A
+Visiting: B
+Visiting: D
+Goal Reached!
+
+
+
+
+
+
+7)
+CODE:
+
+colors = ["Red", "Green", "Blue"]
+
+for stateA in colors:
+    for stateB in colors:
+
+        # Constraint: Adjacent states cannot have same color
+        if stateA != stateB:
+            print("State A =", stateA,
+                  "State B =", stateB)
+
+OUTPUT:
+State A = Red State B = Green
+State A = Red State B = Blue
+State A = Green State B = Red
+State A = Green State B = Blue
+State A = Blue State B = Red
+State A = Blue State B = Green
+
+8)
+CODE:
+
+N = 8
+
+board = [[0 for _ in range(N)] for _ in range(N)]
+
+def is_safe(board, row, col):
+
+    # Check left side
+    for i in range(col):
+        if board[row][i] == 1:
+            return False
+
+    # Upper diagonal
+    i, j = row, col
+    while i >= 0 and j >= 0:
+        if board[i][j] == 1:
+            return False
+        i -= 1
+        j -= 1
+
+    # Lower diagonal
+    i, j = row, col
+    while i < N and j >= 0:
+        if board[i][j] == 1:
+            return False
+        i += 1
+        j -= 1
+
+    return True
+
+def solve(board, col):
+
+    if col >= N:
+        return True
+
+    for row in range(N):
+
+        if is_safe(board, row, col):
+
+            board[row][col] = 1
+
+            if solve(board, col + 1):
+                return True
+
+            board[row][col] = 0
+
+    return False
+
+if solve(board, 0):
+
+    print("Solution Found:")
+    for row in board:
+        print(row)
+
+else:
+    print("No Solution Exists")
+
+OUTPUT:
+Solution Found:
+[1, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 1, 0]
+[0, 0, 0, 0, 1, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 1]
+[0, 1, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 1, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 1, 0, 0]
+[0, 0, 1, 0, 0, 0, 0, 0]
